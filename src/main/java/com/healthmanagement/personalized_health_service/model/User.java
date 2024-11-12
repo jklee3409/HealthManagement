@@ -38,7 +38,7 @@ public class User {
     @Column
     private String gender;
 
-    @Column
+    @Column(nullable = false)
     private String healthGoal;
 
     @Column
@@ -55,5 +55,9 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getGoal() {
+        return healthGoal;
     }
 }
