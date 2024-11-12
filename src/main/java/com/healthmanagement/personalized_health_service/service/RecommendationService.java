@@ -16,6 +16,9 @@ public class RecommendationService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ChatGptApiClient chatGptApiClient;
+
     public Recommendation generateRecommendation(Long userId) {
         Optional<User> optionalUser = userService.getUserById(userId);
 
@@ -23,9 +26,11 @@ public class RecommendationService {
                 new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다.")
         );
 
-        // 기본 추천 생성 로직
-        String dietRecommendation = "고단백 저칼로리 식단 추천";
-        String exerciseRecommendation = "유산소 운동 30분";
+        String prompt = "사용자의 목표가 " + user.getGoal() + "일 때, 추천할 식단과 운동을 알려주세요.";
+        String recommendationText = chatGptApiClient.getRecommendation(prompt);
+
+        String dietRecommendation = extractDietRecommendation(recommendationText);
+        String exerciseRecommendation = extractExerciseRecommendation(recommendationText);
 
         Recommendation recommendation = new Recommendation();
         recommendation.setUser(user);
@@ -37,5 +42,14 @@ public class RecommendationService {
 
     public Recommendation getRecommendation(Long userId) {
         return recommendationRepository.findByUserId(userId);
+    }
+
+    private String extractDietRecommendation(String recommendationText) {
+        return recommendationText.split("운동 추천:")[0].replace("식단 추천:", "").trim();
+    }
+
+    private String extractExerciseRecommendation(String recommendationText) {
+        String[] parts = recommendationText.split("운동 추천:");
+        return parts.length > 1 ? parts[1].trim() : "";
     }
 }
