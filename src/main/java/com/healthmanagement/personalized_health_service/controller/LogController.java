@@ -1,5 +1,6 @@
 package com.healthmanagement.personalized_health_service.controller;
 
+import com.healthmanagement.personalized_health_service.model.ExerciseLog;
 import com.healthmanagement.personalized_health_service.model.MealLog;
 import com.healthmanagement.personalized_health_service.service.LogService;
 import java.util.List;
@@ -26,9 +27,21 @@ public class LogController {
         return new ResponseEntity<>(createdMealLog, HttpStatus.CREATED);
     }
 
+    @PostMapping("/exercise")
+    public ResponseEntity<ExerciseLog> addExerciseLog(@RequestBody ExerciseLog exerciseLog) {
+        ExerciseLog createdExerciseLog = logService.addExerciseLog(exerciseLog);
+        return new ResponseEntity<>(createdExerciseLog, HttpStatus.CREATED);
+    }
+
     @GetMapping("/meal/{userId}")
     public ResponseEntity<List<MealLog>> getMealLogsByUserId(@PathVariable Long userId) {
         List<MealLog> mealLogs = logService.getMealLogsByUserId(userId);
         return new ResponseEntity<>(mealLogs, HttpStatus.OK);
+    }
+
+    @GetMapping("/exercise/{userId}")
+    public ResponseEntity<List<ExerciseLog>> getExerciseLogsByUserId(@PathVariable Long userId) {
+        List<ExerciseLog> exerciseLogs = logService.getExerciseLogsByUserId(userId);
+        return new ResponseEntity<>(exerciseLogs, HttpStatus.OK);
     }
 }
