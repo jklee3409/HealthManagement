@@ -1,10 +1,13 @@
 package com.healthmanagement.personalized_health_service.service;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
 @Service
 public class ChatGptApiClient {
@@ -21,11 +24,13 @@ public class ChatGptApiClient {
     public String getRecommendation(String prompt) {
         try {
             return this.webClient.post()
+                    .uri("")
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
                     .bodyValue(createRequestBody(prompt))
                     .retrieve()
                     .bodyToMono(String.class)
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(5)))
                     .block();
         }catch (WebClientResponseException e) {
             throw new RuntimeException("Failed to retrieve from chatGPT API", e);
@@ -34,8 +39,11 @@ public class ChatGptApiClient {
 
     private Map<String, Object> createRequestBody(String prompt) {
         return Map.of(
-                "model", "text-davinci-003",
-                "prompt", prompt,
+                "model", "gpt-3.5-turbo",
+                "messages", List.of(
+                        Map.of("role", "system", "content", "You are a helpful assistant."),
+                        Map.of("role", "user", "content", prompt)
+                ),
                 "max_tokens", 150,
                 "temperature", 0.7
         );
