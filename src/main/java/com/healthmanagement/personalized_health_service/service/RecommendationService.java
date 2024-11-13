@@ -20,7 +20,7 @@ public class RecommendationService {
     private ChatGptApiClient chatGptApiClient;
 
     public Recommendation generateRecommendation(Long userId) {
-        Optional<User> optionalUser = userService.getUserById(userId);
+        Optional<User> optionalUser = userService.findUserById(userId);
 
         User user = optionalUser.orElseThrow(() ->
                 new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다.")
