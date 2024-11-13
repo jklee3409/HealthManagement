@@ -1,5 +1,6 @@
 package com.healthmanagement.personalized_health_service.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,13 +26,12 @@ public class ExerciseLog {
     private User user;
 
     @Column(nullable = false)
+    @JsonProperty("exerciseType")
     private String exerciseName;
 
     @Column(nullable = false)
+    @JsonProperty("duration")
     private Double exerciseTime; // 운동 시간 (분)
-
-    @Column(nullable = false)
-    private Double caloriesBurned;
 
     @Column
     private LocalDate date;
@@ -39,5 +39,17 @@ public class ExerciseLog {
     @PrePersist
     protected void onCreate() {
         date = LocalDate.now();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getExerciseName() {
+        return exerciseName;
+    }
+
+    public Double getExerciseTime() {
+        return exerciseTime;
     }
 }
