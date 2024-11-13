@@ -1,14 +1,19 @@
 package com.healthmanagement.personalized_health_service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -53,9 +58,23 @@ public class User {
     @Column
     private LocalDate createdAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<MealLog> mealLogs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ExerciseLog> exerciseLogs = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDate.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -68,5 +87,17 @@ public class User {
 
     public String getGoal() {
         return healthGoal;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public Double getWeight() {
+        return weight;
     }
 }
