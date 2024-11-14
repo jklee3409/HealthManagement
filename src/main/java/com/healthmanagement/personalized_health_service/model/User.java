@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -42,6 +41,10 @@ public class User {
     @Column
     @JsonProperty("weight")
     private Double weight;
+
+    @Column
+    @JsonProperty("skeletalMuscleMass")
+    private Double skeletalMuscleMass;
 
     @Column
     @JsonProperty("age")
@@ -99,5 +102,13 @@ public class User {
 
     public Double getWeight() {
         return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public void setSkeletalMuscleMass(Double skeletalMuscleMass) {
+        this.skeletalMuscleMass = skeletalMuscleMass;
     }
 }
