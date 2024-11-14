@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import org.springframework.cglib.core.Local;
 
 @Entity
 @Table(name = "exercise_logs")
@@ -34,6 +35,9 @@ public class ExerciseLog {
     private Double exerciseTime; // 운동 시간 (분)
 
     @Column
+    private Double caloriesBurned;
+
+    @Column
     private LocalDate date;
 
     @PrePersist
@@ -51,5 +55,17 @@ public class ExerciseLog {
 
     public Double getExerciseTime() {
         return exerciseTime;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public Double getCaloriesBurned() {
+        return caloriesBurned;
+    }
+
+    public void setCaloriesBurned(Double caloriesBurned) {
+        this.caloriesBurned = caloriesBurned;
     }
 }
