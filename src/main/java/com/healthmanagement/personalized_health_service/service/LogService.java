@@ -4,6 +4,7 @@ import com.healthmanagement.personalized_health_service.model.ExerciseLog;
 import com.healthmanagement.personalized_health_service.model.MealLog;
 import com.healthmanagement.personalized_health_service.repository.ExerciseLogRepository;
 import com.healthmanagement.personalized_health_service.repository.MealLogRepository;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,13 @@ public class LogService {
 
     public List<ExerciseLog> getExerciseLogsByUserId(Long userId) {
         return exerciseLogRepository.findByUserId(userId);
+    }
+
+    public List<MealLog> getMealLogsByDate(Long userId, LocalDate date) {
+        return mealLogRepository.findByUserIdAndDate(userId, date);
+    }
+
+    public List<ExerciseLog> getExerciseLogsByDate(Long userId, LocalDate date) {
+        return exerciseLogRepository.findByUserIdAndDate(userId, date);
     }
 }
