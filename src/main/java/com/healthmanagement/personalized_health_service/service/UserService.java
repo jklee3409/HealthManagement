@@ -2,6 +2,7 @@ package com.healthmanagement.personalized_health_service.service;
 
 import com.healthmanagement.personalized_health_service.model.User;
 import com.healthmanagement.personalized_health_service.repository.UserRepository;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +34,18 @@ public class UserService {
         return user;
     }
 
-    public Optional<User> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public void updateUserMetrics(Long userId, Map<String, Object> updates) throws Exception {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException(("사용자를 찾을 수 없습니다.")));
+
+        if (updates.containsKey("weight")) {
+            user.setWeight((Double) updates.get("weight"));
+        }
+        if (updates.containsKey("skeletalMuscleMass")) {
+            user.setSkeletalMuscleMass((Double) updates.get("skeletalMuscleMass"));
+        }
+
+        userRepository.save(user);
     }
 
     public Optional<User> findUserById(Long id) {
