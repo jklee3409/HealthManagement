@@ -52,4 +52,8 @@ public class MealLog {
     public void setUser(final User user) {
         this.user = user;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
 }
