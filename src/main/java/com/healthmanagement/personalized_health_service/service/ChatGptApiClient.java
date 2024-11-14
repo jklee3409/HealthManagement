@@ -18,7 +18,7 @@ public class ChatGptApiClient {
     private String apiKey;
 
     public ChatGptApiClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/completions").build();
+        this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
     }
 
     public String getRecommendation(String prompt) {
@@ -30,9 +30,9 @@ public class ChatGptApiClient {
                     .bodyValue(createRequestBody(prompt))
                     .retrieve()
                     .bodyToMono(String.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(5)))
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)))
                     .block();
-        }catch (WebClientResponseException e) {
+        } catch (WebClientResponseException e) {
             throw new RuntimeException("Failed to retrieve from chatGPT API", e);
         }
     }
@@ -44,7 +44,7 @@ public class ChatGptApiClient {
                         Map.of("role", "system", "content", "You are a helpful assistant."),
                         Map.of("role", "user", "content", prompt)
                 ),
-                "max_tokens", 150,
+                "max_tokens", 1000,
                 "temperature", 0.7
         );
     }
