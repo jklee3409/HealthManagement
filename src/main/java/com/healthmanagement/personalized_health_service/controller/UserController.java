@@ -2,6 +2,7 @@ package com.healthmanagement.personalized_health_service.controller;
 
 import com.healthmanagement.personalized_health_service.dto.LoginRequest;
 import com.healthmanagement.personalized_health_service.model.User;
+import com.healthmanagement.personalized_health_service.repository.UserRepository;
 import com.healthmanagement.personalized_health_service.service.UserService;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,6 +29,20 @@ public class UserController {
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register/kakao")
+    public ResponseEntity<User> registerKakaoUser(@RequestBody User user) {
+        User kakaoUser = userService.findUserByEmail(user.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        kakaoUser.setAge(user.getAge());
+        kakaoUser.setGender(user.getGender());
+        kakaoUser.setHeight(user.getHeight());
+        kakaoUser.setWeight(user.getWeight());
+        kakaoUser.setSkeletalMuscleMass(user.getSkeletalMuscleMass());
+
+        return new ResponseEntity<>(kakaoUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
