@@ -43,6 +43,7 @@ public class ExerciseLogController {
         double caloriesBurned = calorieCalculatorService.calculateCalories(
                 exerciseLog.getExerciseName(), exerciseLog.getExerciseTime(), user.getWeight());
 
+        System.out.println();
         exerciseLog.setCaloriesBurned(caloriesBurned);
         exerciseLog.setUser(user);
         ExerciseLog savedExerciseLog = exerciseLogRepository.save(exerciseLog);
