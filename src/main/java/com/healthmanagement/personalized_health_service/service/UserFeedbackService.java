@@ -1,8 +1,12 @@
 package com.healthmanagement.personalized_health_service.service;
 
 import com.healthmanagement.personalized_health_service.model.User;
+import com.healthmanagement.personalized_health_service.model.UserFeedback;
 import com.healthmanagement.personalized_health_service.repository.ExerciseLogRepository;
 import com.healthmanagement.personalized_health_service.repository.MealLogRepository;
+import com.healthmanagement.personalized_health_service.repository.UserFeedbackRepository;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +16,40 @@ public class UserFeedbackService {
     private final ChatGptApiClient chatGptApiClient;
     private final MealLogRepository mealLogRepository;
     private final ExerciseLogRepository exerciseLogRepository;
+    private final UserFeedbackRepository userFeedbackRepository;
+    private final UserService userService;
 
     @Autowired
     public UserFeedbackService(ChatGptApiClient chatGptApiClient,
                                MealLogRepository mealLogRepository,
-                               ExerciseLogRepository exerciseLogRepository) {
+                               ExerciseLogRepository exerciseLogRepository,
+                               UserFeedbackRepository userFeedbackRepository,
+                               UserService userService) {
         this.chatGptApiClient = chatGptApiClient;
         this.mealLogRepository = mealLogRepository;
         this.exerciseLogRepository = exerciseLogRepository;
+        this.userFeedbackRepository = userFeedbackRepository;
+        this.userService = userService;
     }
 
     public String generateFeedback(User user) {
         String prompt = createPrompt(user);
-        return chatGptApiClient.getRecommendation(prompt);
+        String feedback = chatGptApiClient.getRecommendation(prompt);
+        saveFeedback(user.getId(), feedback);
+        return feedback;
+    }
+
+    public void saveFeedback(Long userId, String feedback) {
+        User user = userService.findUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserFeedback userFeedback = new UserFeedback(user, feedback, LocalDateTime.now());
+        userFeedbackRepository.save(userFeedback);
+    }
+
+
+    public List<UserFeedback> getFeedbacksByDateRange(Long userId, LocalDateTime start, LocalDateTime end) {
+        return userFeedbackRepository.findByUserIdAndTimestampBetween(userId, start, end);
     }
 
     private String createPrompt(User user) {
