@@ -25,6 +25,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
@@ -41,6 +44,8 @@ public class UserController {
         kakaoUser.setHeight(user.getHeight());
         kakaoUser.setWeight(user.getWeight());
         kakaoUser.setSkeletalMuscleMass(user.getSkeletalMuscleMass());
+
+        userRepository.save(kakaoUser);
 
         return new ResponseEntity<>(kakaoUser, HttpStatus.CREATED);
     }
