@@ -111,4 +111,72 @@ public class User {
     public void setSkeletalMuscleMass(Double skeletalMuscleMass) {
         this.skeletalMuscleMass = skeletalMuscleMass;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getSkeletalMuscleMass() {
+        return skeletalMuscleMass;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getHealthGoal() {
+        return healthGoal;
+    }
+
+    public void setHealthGoal(String healthGoal) {
+        this.healthGoal = healthGoal;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<MealLog> getMealLogs() {
+        return mealLogs;
+    }
+
+    public void setMealLogs(List<MealLog> mealLogs) {
+        this.mealLogs = mealLogs;
+    }
+
+    public List<ExerciseLog> getExerciseLogs() {
+        return exerciseLogs;
+    }
+
+    public void setExerciseLogs(List<ExerciseLog> exerciseLogs) {
+        this.exerciseLogs = exerciseLogs;
+    }
 }
