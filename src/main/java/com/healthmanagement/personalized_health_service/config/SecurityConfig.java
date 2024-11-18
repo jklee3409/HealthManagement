@@ -5,14 +5,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -22,28 +24,51 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**").permitAll() // /api/** 경로 허용
-                        .anyRequest().authenticated() // 나머지 경로는 인증 요구
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class); // CORS 필터 추가
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/oauth/kakao/**",
+                                "/oauth/kakao/login",
+                                "/oauth/kakao/success",
+                                "/login/**",
+                                "/error",
+                                "/api/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                // Disable Spring Security's OAuth2 configuration since we're using custom Kakao implementation
+                .oauth2Login(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization",
+                "Content-Type",
+                "Origin",
+                "Accept",
+                "X-Requested-With",
+                "Access-Control-Request-Method",
+                "Access-Control-Request-Headers"
+        ));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 출처
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type")); // 허용할 헤더
-        config.setAllowCredentials(true); // 자격 증명 허용
-
-        source.registerCorsConfiguration("/**", config); // 모든 경로에 CORS 설정 적용
-        return new CorsFilter(source);
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
