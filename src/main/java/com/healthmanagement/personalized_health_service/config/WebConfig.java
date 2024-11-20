@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000")  // React 앱의 URL을 명시
+                .allowedOrigins("https://fitwell-healthcare.netlify.app","http://localhost:3000")  // React 앱의 URL을 명시
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .maxAge(3600);

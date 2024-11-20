@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/oauth/kakao")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://fitwell-healthcare.netlify.app")
 public class KakaoAuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(KakaoAuthController.class);
