@@ -1,18 +1,8 @@
 package com.healthmanagement.personalized_health_service.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer{
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("https://fitwell-healthcare.netlify.app","http://localhost:3000")  // React 앱의 URL을 명시
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("*")
-                .maxAge(3600);
-    }
+public class WebConfig {
+    // CORS 설정을 제거하여 SecurityConfig 에서 관리하도록 함.
 }
