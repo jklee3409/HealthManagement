@@ -17,6 +17,12 @@ FitWell의 백엔드 서버는 Spring Boot와 MySQL을 기반으로 개인 맞�
 
 ---
 
+## 프로그램 로직
+
+![logic](https://github.com/user-attachments/assets/ffea1aa5-2d0a-4f6f-a26a-9feb366dec19)
+
+---
+
 ## 데이터베이스 설계 🗄️
 
 ### 1. User Table
