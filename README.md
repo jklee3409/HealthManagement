@@ -14,6 +14,7 @@ FitWell의 백엔드 서버는 Spring Boot와 MySQL을 기반으로 개인 맞�
 - **API**: 카카오 로그인 API, ChatGPT API
 - **빌드 도구**: Maven
 - **테스트**: JUnit 5, AssertJ
+- **배포**: Docker, AWS EC2
 
 ---
 
