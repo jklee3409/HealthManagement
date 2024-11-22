@@ -77,10 +77,20 @@ public class UserController {
             @RequestBody Map<String, Object> updates) {
 
         try {
+            if (updates.containsKey("weight")) {
+                updates.put("weight", parseToDouble(updates.get("weight")));
+            }
+            if (updates.containsKey("skeletalMuscleMass")) {
+                updates.put("skeletalMuscleMass", parseToDouble(updates.get("skeletalMuscleMass")));
+            }
+
             userService.updateUserMetrics(userId, updates);
             return ResponseEntity.ok("Successfully updated user metrics");
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("failed update user metrics: " + e.getMessage());
+
+        } catch (Exception e) {
+            String errorMessage = String.format("Failed to update user metrics for userId %d: %s. Data: %s",
+                    userId, e.getMessage(), updates);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
     }
 
@@ -90,5 +100,25 @@ public class UserController {
 
         return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    private Double parseToDouble(Object value) throws IllegalArgumentException {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        }
+
+        if (value instanceof String) {
+            try {
+                return Double.parseDouble((String) value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid value format: " + value);
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported value type: " + value.getClass().getSimpleName());
     }
 }
